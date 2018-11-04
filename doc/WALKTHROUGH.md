@@ -2,8 +2,8 @@
 
 ## Getting started
 
-Right after installing and skipping through the manual we recommend to test that the tool works properly. 
-We have prepared a FASTQ file containing only reads of *Drosophila melanogaster* that map to the transposable element *jockey* 
+Right after installing and skipping through the manual we recommend to test if the tool works properly. 
+We have prepared a FASTQ file containing reads from *Drosophila melanogaster* that map to the transposable element *jockey* 
 (can be downloaded [here](https://github.com/W-L/deviaTE/blob/master/example/jockey_dmel.fastq) [~3Mb, in the example folder of this repository]).
 These sequences are sanger reads from Drosophila 12 Genomes Consortium et al. 2007. Evolution of genes and genomes on the Drosophila phylogeny. *Nature*. 450(7167):203-218.
 
@@ -21,8 +21,8 @@ deviaTE_analyse --input jockey_dmel.fastq.fused.sort.bam --family DMLINEJA
 deviaTE_plot --input jockey_dmel.fastq.fused.sort.bam.DMLINEJA
 ```
 
-this will first trim, map and filter the reads, which yields an alignment file called `jockey_dmel.fastq.fused.sort.bam`
-then the tool collects the quantitative information and calculates estimators, which produces the output table `jockey_dmel.fastq.fused.sort.bam.DMLINEJA`. For a detailed description of this output, see below.
+The reads will be trimmed, mapped, filtered and an alignment file called `jockey_dmel.fastq.fused.sort.bam` will be created.
+Next, the tool estimates the abundance as well as the diversity of TEs and reports the results in the output table `jockey_dmel.fastq.fused.sort.bam.DMLINEJA`. For a detailed description of this output, see below.
 Finally a visualization is produced, resulting in an illustration of jockey that should look like [this](https://github.com/W-L/deviaTE/blob/master/example/jockey_dmel.fastq.DMLINEJA.pdf)
 
 
@@ -43,7 +43,7 @@ To analyze and visualize transposable element families from sequencing reads the
 
 ```deviaTE --input_fq foo.fastq --families TEfamily1,TEfamily2,... --library TE_consensus_sequences.fasta```
 
-where foo.fastq contains sequencing reads and TEfamily1 etc. are headers of TE reference sequences in the file defined by `--library`. 
+where foo.fastq contains sequencing reads and TEfamily1 etc. are headers of fasta entries of the file containing the consensus sequences of TEs (provided by `--library`). 
 
 Any fasta file used as library must first be indexed with:
 
@@ -51,17 +51,17 @@ Any fasta file used as library must first be indexed with:
 bwa index TE_consensus_sequences.fasta
 ```
 
-Multiple families can be selected, they simply need to be separated by commas without spaces. DeviaTE can also be applied to multiple fastq files in a directory using `--input_fq_dir` and running the program from within that directory. 
+Multiple families can be selected, they simply need to be separated by commas without spaces. DeviaTE can also be applied to multiple fastq files in a directory using `--input_fq_dir` (?? das kapier ich nicht: and running the program from within that directory). 
 
-Other available arguments can be seen with `deviaTE -h/--help` and are documented in the [Manual](https://github.com/W-L/deviaTE/blob/master/doc/MANUAL.md) 
+All available arguments are shown with `deviaTE -h/--help` and are documented in the [Manual](https://github.com/W-L/deviaTE/blob/master/doc/MANUAL.md) 
 
-The result will be a table of quantitative information and a visualization for each selected TE families in each of the specified samples.
+The result will be a table of quantitative information and a visualization for each selected TE family and for each sample.
 
 
 
-### Using the three sequential steps
+### Using the three steps sequentially
 
-Similar to the example presented above, you can manually run the three steps in the workflow of DeviaTE for more flexibility. The first step involves the script called `deviaTE_prep`, which trims, maps and filters the input sequencing reads and performs the detection of internally deleted variants. Basic usage involves specifying the input sequences (single sample) and the consensus sequences of TEs, e. g.:
+Similar to the example presented above, you can manually run the three steps in the workflow of DeviaTE. This allows more fine-grained control and flexibility. The first step involves the script called `deviaTE_prep`, which trims, maps and filters the input sequencing reads (?? stimmt das, dachte das macht das nächst script: and performs the detection of internally deleted variants). Basic usage involves specifying the input sequences (single sample) and the consensus sequences of TEs, e. g.:
 
 ```
 deviaTE_prep --input foo.fastq --library TE_consensus_sequences.fasta
@@ -69,7 +69,7 @@ deviaTE_prep --input foo.fastq --library TE_consensus_sequences.fasta
 
 Further arguments are available, which specify the quality encoding and the parameters used for trimming and filerting.
 
-From this step you obtain an alignment file of the form `foo.fastq.fused.sort.bam` and an index of this file. For preparation no TE family needs to be selected, thus reads are mapped to all reference sequences present in the library. This means that the next step of analysing TE families can be performed multiple times on this alignment file. The basic command for analysing a TE family is of this form:
+From this step you obtain an alignment file of the form `foo.fastq.fused.sort.bam` and an index of this file (??dachte es gibt keinen index mehr). For preparation no TE family needs to be selected, thus reads are mapped to all reference sequences present in the library. This means that the next step of analysing TE families can be performed multiple times on this alignment file. The basic command for analysing a TE family is of this form:
 
 ```
 deviaTE_analyse --input foo.fastq.fused.sort.bam --family TEfamily --library TE_consensus_sequences.fasta
